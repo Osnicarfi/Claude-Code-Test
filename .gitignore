@@ -1,0 +1,6 @@
+data/
+itbi.db
+itbi.db-wal
+itbi.db-shm
+__pycache__/
+*.pyc

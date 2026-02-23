@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITBI SP - Consulta de Transações Imobiliárias</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #dbeafe;
+            --secondary: #0f172a;
+            --accent: #10b981;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--secondary) 0%, #1e3a5f 100%);
+            color: white;
+            padding: 2rem 0 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #60a5fa;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            opacity: 0.6;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Search area */
+        .search-container {
+            max-width: 720px;
+            margin: -1.5rem auto 0;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-xl);
+            padding: 1.5rem;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+
+        .input-group {
+            flex: 1;
+            position: relative;
+        }
+
+        .input-group.numero {
+            flex: 0 0 120px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fff;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .input-group input::placeholder {
+            color: #94a3b8;
+        }
+
+        .btn-search {
+            padding: 0.7rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+
+        .btn-search:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-search:active {
+            transform: scale(0.98);
+        }
+
+        .search-hint {
+            margin-top: 0.75rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .search-hint code {
+            background: #f1f5f9;
+            padding: 0.1em 0.4em;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        /* Autocomplete */
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+            max-height: 220px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .suggestions.active {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 0.6rem 1rem;
+            cursor: pointer;
+            font-size: 0.88rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.1s;
+        }
+
+        .suggestion-item:hover, .suggestion-item.active {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Results area */
+        .results-container {
+            max-width: 900px;
+            margin: 1.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .results-count {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .results-count strong {
+            color: var(--text);
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .sort-controls label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .sort-controls select {
+            padding: 0.35rem 0.6rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-family: inherit;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* Chart */
+        .chart-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .chart-card h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 250px;
+        }
+
+        /* Table */
+        .results-table-wrapper {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .results-table thead th {
+            background: #f8fafc;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        .results-table thead th:hover {
+            color: var(--primary);
+        }
+
+        .results-table tbody tr {
+            transition: background 0.1s;
+        }
+
+        .results-table tbody tr:hover {
+            background: #f0f9ff;
+        }
+
+        .results-table tbody td {
+            padding: 0.7rem 1rem;
+            font-size: 0.87rem;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .valor-cell {
+            font-weight: 600;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        .data-cell {
+            white-space: nowrap;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .endereco-cell {
+            font-weight: 500;
+        }
+
+        .complemento-tag {
+            display: inline-block;
+            background: #f1f5f9;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            margin-left: 0.3rem;
+        }
+
+        .bairro-tag {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.72rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* Summary cards */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .summary-card {
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .summary-card .label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .summary-card .value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .summary-card .value.green { color: var(--accent); }
+        .summary-card .value.blue { color: var(--primary); }
+
+        /* Loading & empty states */
+        .loading {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+            color: var(--text);
+        }
+
+        .empty-state p {
+            font-size: 0.85rem;
+        }
+
+        /* Initial state */
+        .initial-state {
+            text-align: center;
+            padding: 4rem 1.5rem;
+        }
+
+        .initial-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+            opacity: 0.15;
+        }
+
+        .initial-state h3 {
+            font-size: 1.1rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .initial-state p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            line-height: 1.6;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .header h1 { font-size: 1.3rem; }
+            .search-row { flex-direction: column; }
+            .input-group.numero { flex: 1; }
+            .stats-bar { gap: 1rem; }
+            .results-table { font-size: 0.82rem; }
+            .results-table thead th,
+            .results-table tbody td { padding: 0.5rem 0.6rem; }
+            .summary-cards { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="header-content">
+        <h1>Transacoes Imobiliarias - Sao Paulo</h1>
+        <p>Dados abertos de ITBI da Prefeitura de SP (mercado secundario)</p>
+        <div class="stats-bar" id="statsBar">
+            <div class="stat-item">
+                <div class="stat-value" id="statTotal">--</div>
+                <div class="stat-label">Transacoes</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="statYears">--</div>
+                <div class="stat-label">Periodo</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="search-container">
+    <div class="search-card">
+        <form id="searchForm" class="search-row" autocomplete="off">
+            <div class="input-group">
+                <label for="logradouro">Logradouro (rua, avenida...)</label>
+                <input type="text" id="logradouro" name="logradouro"
+                       placeholder="Ex: Avenida Paulista, R Augusta, Al Santos..."
+                       autocomplete="off" spellcheck="false">
+                <div class="suggestions" id="suggestions"></div>
+            </div>
+            <div class="input-group numero">
+                <label for="numero">Numero</label>
+                <input type="text" id="numero" name="numero"
+                       placeholder="1578">
+            </div>
+            <button type="submit" class="btn-search" id="btnSearch">Buscar</button>
+        </form>
+        <div class="search-hint">
+            Aceita abreviacoes: <code>AV</code> = Avenida, <code>R</code> = Rua,
+            <code>AL</code> = Alameda, etc. O numero e opcional.
+        </div>
+    </div>
+</div>
+
+<div class="results-container">
+    <!-- Initial state -->
+    <div id="initialState" class="initial-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round"/>
+        </svg>
+        <h3>Pesquise um endereco</h3>
+        <p>Digite o nome da rua ou avenida para consultar o historico de transacoes imobiliarias registradas na Prefeitura de SP.</p>
+    </div>
+
+    <!-- Loading -->
+    <div id="loadingState" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Buscando transacoes...</p>
+    </div>
+
+    <!-- Empty -->
+    <div id="emptyState" class="empty-state hidden">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke-linecap="round"/>
+        </svg>
+        <h3>Nenhuma transacao encontrada</h3>
+        <p>Tente buscar com outro nome ou verifique a grafia do endereco.</p>
+    </div>
+
+    <!-- Results -->
+    <div id="resultsArea" class="hidden">
+        <div class="results-header">
+            <div class="results-count" id="resultsCount"></div>
+            <div class="sort-controls">
+                <label for="sortBy">Ordenar por:</label>
+                <select id="sortBy">
+                    <option value="date_desc">Data (mais recente)</option>
+                    <option value="date_asc">Data (mais antigo)</option>
+                    <option value="value_desc">Valor (maior)</option>
+                    <option value="value_asc">Valor (menor)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Summary cards -->
+        <div class="summary-cards" id="summaryCards">
+            <div class="summary-card">
+                <div class="label">Total de transacoes</div>
+                <div class="value blue" id="sumTotal">--</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">Valor medio</div>
+                <div class="value green" id="sumAvg">--</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">Valor minimo</div>
+                <div class="value" id="sumMin">--</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">Valor maximo</div>
+                <div class="value" id="sumMax">--</div>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-card" id="chartCard">
+            <h3>Historico de valores</h3>
+            <div class="chart-wrapper">
+                <canvas id="priceChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="results-table-wrapper">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Endereco</th>
+                        <th>Bairro</th>
+                        <th>Valor da Transacao</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    Dados da <a href="https://prefeitura.sp.gov.br/web/fazenda/w/acesso_a_informacao/31501" target="_blank">
+    Prefeitura de Sao Paulo - Secretaria da Fazenda</a>.<br>
+    Transacoes do mercado secundario com ITBI recolhido.
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const API = '/api';
+
+let allResults = [];
+let priceChart = null;
+
+// --- Format helpers ---
+function formatCurrency(val) {
+    if (val == null) return '—';
+    return 'R$ ' + Number(val).toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+}
+
+function formatDate(d) {
+    if (!d) return '—';
+    const parts = d.split('-');
+    if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    return d;
+}
+
+function formatAddress(r) {
+    let addr = r.logradouro || '';
+    if (r.numero) addr += ', ' + r.numero;
+    if (r.complemento) addr += ` <span class="complemento-tag">${r.complemento}</span>`;
+    return addr;
+}
+
+// --- Stats ---
+async function loadStats() {
+    try {
+        const resp = await fetch(`${API}/stats`);
+        const data = await resp.json();
+        if (data.total_transacoes) {
+            $('statTotal').textContent = Number(data.total_transacoes).toLocaleString('pt-BR');
+        }
+        if (data.ano_inicio && data.ano_fim) {
+            $('statYears').textContent = `${data.ano_inicio} - ${data.ano_fim}`;
+        }
+    } catch(e) { /* ignore */ }
+}
+
+// --- Autocomplete ---
+let suggestTimeout = null;
+let suggestIdx = -1;
+
+$('logradouro').addEventListener('input', function() {
+    clearTimeout(suggestTimeout);
+    const q = this.value.trim();
+    if (q.length < 3) {
+        closeSuggestions();
+        return;
+    }
+    suggestTimeout = setTimeout(() => fetchSuggestions(q), 250);
+});
+
+$('logradouro').addEventListener('keydown', function(e) {
+    const box = $('suggestions');
+    const items = box.querySelectorAll('.suggestion-item');
+    if (!items.length) return;
+
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        suggestIdx = Math.min(suggestIdx + 1, items.length - 1);
+        updateSuggestHighlight(items);
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        suggestIdx = Math.max(suggestIdx - 1, 0);
+        updateSuggestHighlight(items);
+    } else if (e.key === 'Enter' && suggestIdx >= 0) {
+        e.preventDefault();
+        $('logradouro').value = items[suggestIdx].textContent;
+        closeSuggestions();
+        $('numero').focus();
+    } else if (e.key === 'Escape') {
+        closeSuggestions();
+    }
+});
+
+function updateSuggestHighlight(items) {
+    items.forEach((el, i) => el.classList.toggle('active', i === suggestIdx));
+    if (suggestIdx >= 0 && items[suggestIdx]) {
+        items[suggestIdx].scrollIntoView({ block: 'nearest' });
+    }
+}
+
+async function fetchSuggestions(q) {
+    try {
+        const resp = await fetch(`${API}/suggest?q=${encodeURIComponent(q)}`);
+        const data = await resp.json();
+        renderSuggestions(data.suggestions || []);
+    } catch(e) { closeSuggestions(); }
+}
+
+function renderSuggestions(list) {
+    const box = $('suggestions');
+    if (!list.length) { closeSuggestions(); return; }
+    suggestIdx = -1;
+    box.innerHTML = list.map(s =>
+        `<div class="suggestion-item">${escapeHtml(s)}</div>`
+    ).join('');
+    box.classList.add('active');
+
+    box.querySelectorAll('.suggestion-item').forEach(el => {
+        el.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            $('logradouro').value = this.textContent;
+            closeSuggestions();
+            $('numero').focus();
+        });
+    });
+}
+
+function closeSuggestions() {
+    $('suggestions').classList.remove('active');
+    $('suggestions').innerHTML = '';
+    suggestIdx = -1;
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.input-group')) closeSuggestions();
+});
+
+// --- Search ---
+$('searchForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    closeSuggestions();
+    const logradouro = $('logradouro').value.trim();
+    const numero = $('numero').value.trim();
+    if (!logradouro) {
+        $('logradouro').focus();
+        return;
+    }
+    await doSearch(logradouro, numero);
+});
+
+async function doSearch(logradouro, numero) {
+    showState('loading');
+
+    try {
+        let url = `${API}/search?logradouro=${encodeURIComponent(logradouro)}`;
+        if (numero) url += `&numero=${encodeURIComponent(numero)}`;
+
+        const resp = await fetch(url);
+        const data = await resp.json();
+        allResults = data.results || [];
+
+        if (!allResults.length) {
+            showState('empty');
+            return;
+        }
+
+        showState('results');
+        renderResults();
+    } catch(e) {
+        showState('empty');
+    }
+}
+
+function showState(state) {
+    $('initialState').classList.toggle('hidden', state !== 'initial');
+    $('loadingState').classList.toggle('hidden', state !== 'loading');
+    $('emptyState').classList.toggle('hidden', state !== 'empty');
+    $('resultsArea').classList.toggle('hidden', state !== 'results');
+}
+
+// --- Sort ---
+$('sortBy').addEventListener('change', renderResults);
+
+function sortResults(data) {
+    const mode = $('sortBy').value;
+    const sorted = [...data];
+    sorted.sort((a, b) => {
+        if (mode === 'date_desc') return (b.data_transacao || '').localeCompare(a.data_transacao || '');
+        if (mode === 'date_asc') return (a.data_transacao || '').localeCompare(b.data_transacao || '');
+        if (mode === 'value_desc') return (b.valor_transacao || 0) - (a.valor_transacao || 0);
+        if (mode === 'value_asc') return (a.valor_transacao || 0) - (b.valor_transacao || 0);
+        return 0;
+    });
+    return sorted;
+}
+
+// --- Render ---
+function renderResults() {
+    const sorted = sortResults(allResults);
+
+    // Count & summary
+    $('resultsCount').innerHTML = `<strong>${allResults.length}</strong> transacao(oes) encontrada(s)${allResults.length >= 500 ? ' (limite de 500)' : ''}`;
+
+    const values = allResults.filter(r => r.valor_transacao).map(r => r.valor_transacao);
+    $('sumTotal').textContent = allResults.length;
+    if (values.length) {
+        const avg = values.reduce((a, b) => a + b, 0) / values.length;
+        $('sumAvg').textContent = formatCurrency(avg);
+        $('sumMin').textContent = formatCurrency(Math.min(...values));
+        $('sumMax').textContent = formatCurrency(Math.max(...values));
+    }
+
+    // Table
+    $('resultsBody').innerHTML = sorted.map(r => `
+        <tr>
+            <td class="data-cell">${formatDate(r.data_transacao)}</td>
+            <td class="endereco-cell">${formatAddress(r)}</td>
+            <td>${r.bairro ? `<span class="bairro-tag">${escapeHtml(r.bairro)}</span>` : '—'}</td>
+            <td class="valor-cell">${formatCurrency(r.valor_transacao)}</td>
+        </tr>
+    `).join('');
+
+    // Chart
+    renderChart(allResults);
+}
+
+function renderChart(data) {
+    // Agrupa por ano e calcula média
+    const byYear = {};
+    data.forEach(r => {
+        const year = r.ano || (r.data_transacao ? r.data_transacao.substring(0, 4) : null);
+        if (!year || !r.valor_transacao) return;
+        if (!byYear[year]) byYear[year] = [];
+        byYear[year].push(r.valor_transacao);
+    });
+
+    const years = Object.keys(byYear).sort();
+    if (years.length < 2) {
+        $('chartCard').classList.add('hidden');
+        return;
+    }
+    $('chartCard').classList.remove('hidden');
+
+    const avgValues = years.map(y => {
+        const vals = byYear[y];
+        return vals.reduce((a, b) => a + b, 0) / vals.length;
+    });
+    const counts = years.map(y => byYear[y].length);
+
+    if (priceChart) priceChart.destroy();
+
+    priceChart = new Chart($('priceChart'), {
+        type: 'bar',
+        data: {
+            labels: years,
+            datasets: [
+                {
+                    label: 'Valor medio (R$)',
+                    data: avgValues,
+                    backgroundColor: 'rgba(37, 99, 235, 0.7)',
+                    borderColor: 'rgba(37, 99, 235, 1)',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    yAxisID: 'y',
+                },
+                {
+                    label: 'Qtd. transacoes',
+                    data: counts,
+                    type: 'line',
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    fill: true,
+                    yAxisID: 'y1',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(ctx) {
+                            if (ctx.datasetIndex === 0) return 'Media: ' + formatCurrency(ctx.raw);
+                            return 'Transacoes: ' + ctx.raw;
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom',
+                    labels: { usePointStyle: true, padding: 15, font: { size: 11 } }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    position: 'left',
+                    ticks: {
+                        callback: v => 'R$ ' + (v >= 1e6 ? (v/1e6).toFixed(1) + 'M' : v >= 1e3 ? (v/1e3).toFixed(0) + 'K' : v),
+                        font: { size: 10 }
+                    },
+                    grid: { color: '#f1f5f9' }
+                },
+                y1: {
+                    beginAtZero: true,
+                    position: 'right',
+                    ticks: { font: { size: 10 } },
+                    grid: { display: false }
+                },
+                x: {
+                    ticks: { font: { size: 10 } },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+}
+
+function escapeHtml(s) {
+    if (!s) return '';
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// --- Init ---
+loadStats();
+$('logradouro').focus();
+</script>
+</body>
+</html>
