@@ -234,7 +234,7 @@
 
         /* Results area */
         .results-container {
-            max-width: 900px;
+            max-width: 1150px;
             margin: 1.5rem auto;
             padding: 0 1.5rem;
         }
@@ -304,7 +304,7 @@
             background: var(--card);
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            overflow: hidden;
+            overflow-x: auto;
         }
 
         .results-table {
@@ -501,6 +501,34 @@
             text-decoration: none;
         }
 
+        .area-cell {
+            white-space: nowrap;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .preco-m2-cell {
+            white-space: nowrap;
+            font-weight: 500;
+            color: #7c3aed;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .financiado-cell {
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .financiado-tag {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 0.78rem;
+            padding: 0.1rem 0.45rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
         /* Responsive */
         @media (max-width: 640px) {
             .header h1 { font-size: 1.3rem; }
@@ -616,6 +644,10 @@
                 <div class="value green" id="sumAvg">--</div>
             </div>
             <div class="summary-card">
+                <div class="label">Preco medio / m²</div>
+                <div class="value" style="color:#7c3aed" id="sumAvgM2">--</div>
+            </div>
+            <div class="summary-card">
                 <div class="label">Valor minimo</div>
                 <div class="value" id="sumMin">--</div>
             </div>
@@ -641,6 +673,8 @@
                         <th>Data</th>
                         <th>Endereco</th>
                         <th>Bairro</th>
+                        <th>Area (m²)</th>
+                        <th>R$/m²</th>
                         <th>Valor da Transacao</th>
                     </tr>
                 </thead>
@@ -677,6 +711,23 @@ function formatDate(d) {
     const parts = d.split('-');
     if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
     return d;
+}
+
+function formatArea(val) {
+    if (val == null || val <= 0) return '—';
+    return Number(val).toLocaleString('pt-BR', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 1
+    }) + ' m²';
+}
+
+function formatPrecoM2(valor, area) {
+    if (!valor || !area || area <= 0) return '—';
+    const pm2 = valor / area;
+    return 'R$ ' + Number(pm2).toLocaleString('pt-BR', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }) + '/m²';
 }
 
 function formatAddress(r) {
@@ -844,7 +895,6 @@ function sortResults(data) {
 function renderResults() {
     const sorted = sortResults(allResults);
 
-    // Count & summary
     $('resultsCount').innerHTML = `<strong>${allResults.length}</strong> transacao(oes) encontrada(s)${allResults.length >= 500 ? ' (limite de 500)' : ''}`;
 
     const values = allResults.filter(r => r.valor_transacao).map(r => r.valor_transacao);
@@ -856,12 +906,25 @@ function renderResults() {
         $('sumMax').textContent = formatCurrency(Math.max(...values));
     }
 
+    // Preco medio por m²
+    const m2Samples = allResults.filter(r => r.valor_transacao && r.area && r.area > 0);
+    if (m2Samples.length) {
+        const avgM2 = m2Samples.reduce((a, r) => a + r.valor_transacao / r.area, 0) / m2Samples.length;
+        $('sumAvgM2').textContent = 'R$ ' + Number(avgM2).toLocaleString('pt-BR', {
+            minimumFractionDigits: 0, maximumFractionDigits: 0
+        }) + '/m²';
+    } else {
+        $('sumAvgM2').textContent = '—';
+    }
+
     // Table
     $('resultsBody').innerHTML = sorted.map(r => `
         <tr>
             <td class="data-cell">${formatDate(r.data_transacao)}</td>
             <td class="endereco-cell">${formatAddress(r)}</td>
             <td>${r.bairro ? `<span class="bairro-tag">${escapeHtml(r.bairro)}</span>` : '—'}</td>
+            <td class="area-cell">${formatArea(r.area)}</td>
+            <td class="preco-m2-cell">${formatPrecoM2(r.valor_transacao, r.area)}</td>
             <td class="valor-cell">${formatCurrency(r.valor_transacao)}</td>
         </tr>
     `).join('');
@@ -871,7 +934,6 @@ function renderResults() {
 }
 
 function renderChart(data) {
-    // Agrupa por ano e calcula média
     const byYear = {};
     data.forEach(r => {
         const year = r.ano || (r.data_transacao ? r.data_transacao.substring(0, 4) : null);
