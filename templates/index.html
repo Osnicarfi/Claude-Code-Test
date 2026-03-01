@@ -80,9 +80,7 @@
             flex-wrap: wrap;
         }
 
-        .stat-item {
-            text-align: center;
-        }
+        .stat-item { text-align: center; }
 
         .stat-value {
             font-size: 1.25rem;
@@ -124,9 +122,7 @@
             position: relative;
         }
 
-        .input-group.numero {
-            flex: 0 0 120px;
-        }
+        .input-group.numero { flex: 0 0 120px; }
 
         .input-group label {
             display: block;
@@ -155,9 +151,7 @@
             box-shadow: 0 0 0 3px var(--primary-light);
         }
 
-        .input-group input::placeholder {
-            color: #94a3b8;
-        }
+        .input-group input::placeholder { color: #94a3b8; }
 
         .btn-search {
             padding: 0.7rem 1.5rem;
@@ -173,13 +167,8 @@
             font-family: inherit;
         }
 
-        .btn-search:hover {
-            background: var(--primary-dark);
-        }
-
-        .btn-search:active {
-            transform: scale(0.98);
-        }
+        .btn-search:hover { background: var(--primary-dark); }
+        .btn-search:active { transform: scale(0.98); }
 
         .search-hint {
             margin-top: 0.75rem;
@@ -211,9 +200,7 @@
             display: none;
         }
 
-        .suggestions.active {
-            display: block;
-        }
+        .suggestions.active { display: block; }
 
         .suggestion-item {
             padding: 0.6rem 1rem;
@@ -228,9 +215,7 @@
             color: var(--primary-dark);
         }
 
-        .suggestion-item:last-child {
-            border-bottom: none;
-        }
+        .suggestion-item:last-child { border-bottom: none; }
 
         /* Results area */
         .results-container {
@@ -253,9 +238,7 @@
             color: var(--text-muted);
         }
 
-        .results-count strong {
-            color: var(--text);
-        }
+        .results-count strong { color: var(--text); }
 
         .sort-controls {
             display: flex;
@@ -329,17 +312,10 @@
             white-space: nowrap;
         }
 
-        .results-table thead th:hover {
-            color: var(--primary);
-        }
+        .results-table thead th:hover { color: var(--primary); }
 
-        .results-table tbody tr {
-            transition: background 0.1s;
-        }
-
-        .results-table tbody tr:hover {
-            background: #f0f9ff;
-        }
+        .results-table tbody tr { transition: background 0.1s; }
+        .results-table tbody tr:hover { background: #f0f9ff; }
 
         .results-table tbody td {
             padding: 0.7rem 1rem;
@@ -361,9 +337,7 @@
             font-variant-numeric: tabular-nums;
         }
 
-        .endereco-cell {
-            font-weight: 500;
-        }
+        .endereco-cell { font-weight: 500; }
 
         .complemento-tag {
             display: inline-block;
@@ -383,6 +357,19 @@
             padding: 0.15rem 0.5rem;
             border-radius: 20px;
             font-weight: 500;
+        }
+
+        .area-cell {
+            white-space: nowrap;
+            color: var(--text-muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .preco-m2-cell {
+            white-space: nowrap;
+            font-weight: 500;
+            color: #7c3aed;
+            font-variant-numeric: tabular-nums;
         }
 
         /* Summary cards */
@@ -417,6 +404,18 @@
 
         .summary-card .value.green { color: var(--accent); }
         .summary-card .value.blue { color: var(--primary); }
+
+        /* Disclaimer */
+        .disclaimer {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.78rem;
+            color: #92400e;
+            line-height: 1.5;
+            margin-bottom: 1.25rem;
+        }
 
         /* Loading & empty states */
         .loading {
@@ -456,9 +455,7 @@
             color: var(--text);
         }
 
-        .empty-state p {
-            font-size: 0.85rem;
-        }
+        .empty-state p { font-size: 0.85rem; }
 
         /* Initial state */
         .initial-state {
@@ -501,34 +498,6 @@
             text-decoration: none;
         }
 
-        .area-cell {
-            white-space: nowrap;
-            color: var(--text-muted);
-            font-variant-numeric: tabular-nums;
-        }
-
-        .preco-m2-cell {
-            white-space: nowrap;
-            font-weight: 500;
-            color: #7c3aed;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .financiado-cell {
-            white-space: nowrap;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .financiado-tag {
-            display: inline-block;
-            background: #fef3c7;
-            color: #92400e;
-            font-size: 0.78rem;
-            padding: 0.1rem 0.45rem;
-            border-radius: 20px;
-            font-weight: 500;
-        }
-
         /* Responsive */
         @media (max-width: 640px) {
             .header h1 { font-size: 1.3rem; }
@@ -554,16 +523,16 @@
 
 <header class="header">
     <div class="header-content">
-        <h1>Transacoes Imobiliarias - Sao Paulo</h1>
-        <p>Dados abertos de ITBI da Prefeitura de SP (mercado secundario)</p>
+        <h1>Transações Imobiliárias — São Paulo</h1>
+        <p>Dados abertos de ITBI da Prefeitura de SP (mercado secundário)</p>
         <div class="stats-bar" id="statsBar">
             <div class="stat-item">
                 <div class="stat-value" id="statTotal">--</div>
-                <div class="stat-label">Transacoes</div>
+                <div class="stat-label">Transações</div>
             </div>
             <div class="stat-item">
                 <div class="stat-value" id="statYears">--</div>
-                <div class="stat-label">Periodo</div>
+                <div class="stat-label">Período</div>
             </div>
         </div>
     </div>
@@ -580,15 +549,15 @@
                 <div class="suggestions" id="suggestions"></div>
             </div>
             <div class="input-group numero">
-                <label for="numero">Numero</label>
+                <label for="numero">Número</label>
                 <input type="text" id="numero" name="numero"
                        placeholder="1578">
             </div>
             <button type="submit" class="btn-search" id="btnSearch">Buscar</button>
         </form>
         <div class="search-hint">
-            Aceita abreviacoes: <code>AV</code> = Avenida, <code>R</code> = Rua,
-            <code>AL</code> = Alameda, etc. O numero e opcional.
+            Aceita abreviações: <code>AV</code> = Avenida, <code>R</code> = Rua,
+            <code>AL</code> = Alameda, etc. O número é opcional.
         </div>
     </div>
 </div>
@@ -599,14 +568,14 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round"/>
         </svg>
-        <h3>Pesquise um endereco</h3>
-        <p>Digite o nome da rua ou avenida para consultar o historico de transacoes imobiliarias registradas na Prefeitura de SP.</p>
+        <h3>Pesquise um endereço</h3>
+        <p>Digite o nome da rua ou avenida para consultar o histórico de transações imobiliárias registradas na Prefeitura de SP.</p>
     </div>
 
     <!-- Loading -->
     <div id="loadingState" class="loading hidden">
         <div class="spinner"></div>
-        <p>Buscando transacoes...</p>
+        <p>Buscando transações...</p>
     </div>
 
     <!-- Empty -->
@@ -614,8 +583,8 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" stroke-linecap="round"/>
         </svg>
-        <h3>Nenhuma transacao encontrada</h3>
-        <p>Tente buscar com outro nome ou verifique a grafia do endereco.</p>
+        <h3>Nenhuma transação encontrada</h3>
+        <p>Tente buscar com outro nome ou verifique a grafia do endereço.</p>
     </div>
 
     <!-- Results -->
@@ -633,33 +602,38 @@
             </div>
         </div>
 
+        <!-- Disclaimer -->
+        <div class="disclaimer">
+            ⚠️ Preços declarados pelo contribuinte no ITBI. Discrepâncias com relação ao preço de mercado podem ocorrer por diversos motivos, como transações com permuta, doações, etc.
+        </div>
+
         <!-- Summary cards -->
         <div class="summary-cards" id="summaryCards">
             <div class="summary-card">
-                <div class="label">Total de transacoes</div>
+                <div class="label">Total de transações</div>
                 <div class="value blue" id="sumTotal">--</div>
             </div>
             <div class="summary-card">
-                <div class="label">Valor medio</div>
+                <div class="label">Valor médio</div>
                 <div class="value green" id="sumAvg">--</div>
             </div>
             <div class="summary-card">
-                <div class="label">Preco medio / m²</div>
+                <div class="label">Preço médio / m²</div>
                 <div class="value" style="color:#7c3aed" id="sumAvgM2">--</div>
             </div>
             <div class="summary-card">
-                <div class="label">Valor minimo</div>
+                <div class="label">Valor mínimo</div>
                 <div class="value" id="sumMin">--</div>
             </div>
             <div class="summary-card">
-                <div class="label">Valor maximo</div>
+                <div class="label">Valor máximo</div>
                 <div class="value" id="sumMax">--</div>
             </div>
         </div>
 
         <!-- Chart -->
         <div class="chart-card" id="chartCard">
-            <h3>Historico de valores</h3>
+            <h3>Histórico de valores</h3>
             <div class="chart-wrapper">
                 <canvas id="priceChart"></canvas>
             </div>
@@ -671,11 +645,11 @@
                 <thead>
                     <tr>
                         <th>Data</th>
-                        <th>Endereco</th>
+                        <th>Endereço</th>
                         <th>Bairro</th>
-                        <th>Area (m²)</th>
+                        <th>Área (m²)</th>
                         <th>R$/m²</th>
-                        <th>Valor da Transacao</th>
+                        <th>Valor da Transação</th>
                     </tr>
                 </thead>
                 <tbody id="resultsBody"></tbody>
@@ -686,8 +660,8 @@
 
 <footer class="footer">
     Dados da <a href="https://prefeitura.sp.gov.br/web/fazenda/w/acesso_a_informacao/31501" target="_blank">
-    Prefeitura de Sao Paulo - Secretaria da Fazenda</a>.<br>
-    Transacoes do mercado secundario com ITBI recolhido.
+    Prefeitura de São Paulo — Secretaria da Fazenda</a>.<br>
+    Transações do mercado secundário com ITBI recolhido.
 </footer>
 
 <script>
@@ -746,7 +720,7 @@ async function loadStats() {
             $('statTotal').textContent = Number(data.total_transacoes).toLocaleString('pt-BR');
         }
         if (data.ano_inicio && data.ano_fim) {
-            $('statYears').textContent = `${data.ano_inicio} - ${data.ano_fim}`;
+            $('statYears').textContent = `${data.ano_inicio} – ${data.ano_fim}`;
         }
     } catch(e) { /* ignore */ }
 }
@@ -758,10 +732,7 @@ let suggestIdx = -1;
 $('logradouro').addEventListener('input', function() {
     clearTimeout(suggestTimeout);
     const q = this.value.trim();
-    if (q.length < 3) {
-        closeSuggestions();
-        return;
-    }
+    if (q.length < 3) { closeSuggestions(); return; }
     suggestTimeout = setTimeout(() => fetchSuggestions(q), 250);
 });
 
@@ -838,16 +809,12 @@ $('searchForm').addEventListener('submit', async function(e) {
     closeSuggestions();
     const logradouro = $('logradouro').value.trim();
     const numero = $('numero').value.trim();
-    if (!logradouro) {
-        $('logradouro').focus();
-        return;
-    }
+    if (!logradouro) { $('logradouro').focus(); return; }
     await doSearch(logradouro, numero);
 });
 
 async function doSearch(logradouro, numero) {
     showState('loading');
-
     try {
         let url = `${API}/search?logradouro=${encodeURIComponent(logradouro)}`;
         if (numero) url += `&numero=${encodeURIComponent(numero)}`;
@@ -856,10 +823,7 @@ async function doSearch(logradouro, numero) {
         const data = await resp.json();
         allResults = data.results || [];
 
-        if (!allResults.length) {
-            showState('empty');
-            return;
-        }
+        if (!allResults.length) { showState('empty'); return; }
 
         showState('results');
         renderResults();
@@ -883,9 +847,9 @@ function sortResults(data) {
     const sorted = [...data];
     sorted.sort((a, b) => {
         if (mode === 'date_desc') return (b.data_transacao || '').localeCompare(a.data_transacao || '');
-        if (mode === 'date_asc') return (a.data_transacao || '').localeCompare(b.data_transacao || '');
+        if (mode === 'date_asc')  return (a.data_transacao || '').localeCompare(b.data_transacao || '');
         if (mode === 'value_desc') return (b.valor_transacao || 0) - (a.valor_transacao || 0);
-        if (mode === 'value_asc') return (a.valor_transacao || 0) - (b.valor_transacao || 0);
+        if (mode === 'value_asc')  return (a.valor_transacao || 0) - (b.valor_transacao || 0);
         return 0;
     });
     return sorted;
@@ -895,7 +859,9 @@ function sortResults(data) {
 function renderResults() {
     const sorted = sortResults(allResults);
 
-    $('resultsCount').innerHTML = `<strong>${allResults.length}</strong> transacao(oes) encontrada(s)${allResults.length >= 500 ? ' (limite de 500)' : ''}`;
+    $('resultsCount').innerHTML =
+        `<strong>${allResults.length}</strong> transação(ões) encontrada(s)` +
+        (allResults.length >= 500 ? ' <em>(limite de 500)</em>' : '');
 
     const values = allResults.filter(r => r.valor_transacao).map(r => r.valor_transacao);
     $('sumTotal').textContent = allResults.length;
@@ -906,7 +872,7 @@ function renderResults() {
         $('sumMax').textContent = formatCurrency(Math.max(...values));
     }
 
-    // Preco medio por m²
+    // Preço médio por m²
     const m2Samples = allResults.filter(r => r.valor_transacao && r.area && r.area > 0);
     if (m2Samples.length) {
         const avgM2 = m2Samples.reduce((a, r) => a + r.valor_transacao / r.area, 0) / m2Samples.length;
@@ -917,7 +883,7 @@ function renderResults() {
         $('sumAvgM2').textContent = '—';
     }
 
-    // Table
+    // Tabela
     $('resultsBody').innerHTML = sorted.map(r => `
         <tr>
             <td class="data-cell">${formatDate(r.data_transacao)}</td>
@@ -929,7 +895,6 @@ function renderResults() {
         </tr>
     `).join('');
 
-    // Chart
     renderChart(allResults);
 }
 
@@ -943,10 +908,7 @@ function renderChart(data) {
     });
 
     const years = Object.keys(byYear).sort();
-    if (years.length < 2) {
-        $('chartCard').classList.add('hidden');
-        return;
-    }
+    if (years.length < 2) { $('chartCard').classList.add('hidden'); return; }
     $('chartCard').classList.remove('hidden');
 
     const avgValues = years.map(y => {
@@ -963,7 +925,7 @@ function renderChart(data) {
             labels: years,
             datasets: [
                 {
-                    label: 'Valor medio (R$)',
+                    label: 'Valor médio (R$)',
                     data: avgValues,
                     backgroundColor: 'rgba(37, 99, 235, 0.7)',
                     borderColor: 'rgba(37, 99, 235, 1)',
@@ -972,7 +934,7 @@ function renderChart(data) {
                     yAxisID: 'y',
                 },
                 {
-                    label: 'Qtd. transacoes',
+                    label: 'Qtd. transações',
                     data: counts,
                     type: 'line',
                     borderColor: 'rgba(16, 185, 129, 1)',
@@ -992,8 +954,8 @@ function renderChart(data) {
                 tooltip: {
                     callbacks: {
                         label: function(ctx) {
-                            if (ctx.datasetIndex === 0) return 'Media: ' + formatCurrency(ctx.raw);
-                            return 'Transacoes: ' + ctx.raw;
+                            if (ctx.datasetIndex === 0) return 'Média: ' + formatCurrency(ctx.raw);
+                            return 'Transações: ' + ctx.raw;
                         }
                     }
                 },
@@ -1007,7 +969,7 @@ function renderChart(data) {
                     beginAtZero: true,
                     position: 'left',
                     ticks: {
-                        callback: v => 'R$ ' + (v >= 1e6 ? (v/1e6).toFixed(1) + 'M' : v >= 1e3 ? (v/1e3).toFixed(0) + 'K' : v),
+                        callback: v => 'R$ ' + (v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? (v/1e3).toFixed(0)+'K' : v),
                         font: { size: 10 }
                     },
                     grid: { color: '#f1f5f9' }
