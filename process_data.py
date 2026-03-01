@@ -155,9 +155,11 @@ def find_column_mapping(columns):
             mapping["bairro"] = col
         elif "tipo" in normalized and "imovel" in normalized:
             mapping["tipo_imovel"] = col
-        elif "area" in normalized and ("terreno" in normalized or "construi" in normalized):
+        elif "area" in normalized and "construi" in normalized:
+            mapping["area"] = col  # prioridade: área construída
+        elif "area" in normalized and "terreno" in normalized:
             if "area" not in mapping:
-                mapping["area"] = col
+                mapping["area"] = col  # fallback: terreno se não houver construída
 
     return mapping
 
